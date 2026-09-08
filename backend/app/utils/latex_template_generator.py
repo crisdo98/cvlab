@@ -27,16 +27,28 @@ class LaTeXTemplateGenerator:
     alignment, and spacing into LaTeX commands.
     """
     
-    # Font family mapping to LaTeX font names
+    # Font family mapping to LaTeX font names.
+    #
+    # Every value here MUST be a family that is actually installed in the image
+    # and loadable by name. XeTeX resolves \setmainfont against real family
+    # names and does not follow fontconfig's metric-alias substitutions, so
+    # naming a font the container does not ship (Times New Roman, Arial,
+    # Georgia) fails the whole PDF build with a fontspec error rather than
+    # quietly falling back. Proprietary names are therefore mapped to their
+    # metric-compatible free equivalents.
     FONT_MAPPING = {
         FontFamily.LIBERATION_SANS: "Liberation Sans",
         FontFamily.LIBERATION_SERIF: "Liberation Serif",
-        FontFamily.TIMES_NEW_ROMAN: "Times New Roman",
-        FontFamily.ARIAL: "Arial",
+        # Liberation Serif is metric-compatible with Times New Roman.
+        FontFamily.TIMES_NEW_ROMAN: "Liberation Serif",
+        # Liberation Sans is metric-compatible with Arial.
+        FontFamily.ARIAL: "Liberation Sans",
         FontFamily.HELVETICA: "Nimbus Sans",  # Helvetica clone from URW fonts
-        FontFamily.GEORGIA: "Georgia",
+        # No free metric clone of Georgia is packaged; DejaVu Serif is the
+        # closest installed match (similar large x-height).
+        FontFamily.GEORGIA: "DejaVu Serif",
         FontFamily.PALATINO: "P052",  # Palatino clone from URW fonts
-        FontFamily.COURIER: "Courier New"
+        FontFamily.COURIER: "Nimbus Mono PS",  # Courier clone from URW fonts
     }
     
     def __init__(self, typography: Optional[TypographyConfig] = None):

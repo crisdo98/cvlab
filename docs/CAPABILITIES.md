@@ -361,9 +361,14 @@ Interactive docs are served at **<http://localhost:8002/docs>** (Swagger) and
   `docker-compose up -d --build`.
 - **No concurrent-write protection.** JSON files are read-modify-written; two
   browser tabs editing the same CV can lose an edit.
-- **PDF fonts are the container's.** `templates/cv.latex` selects Liberation
-  Sans / Liberation Mono. Naming a font that is not installed in the image will
-  fail the XeLaTeX run.
+- **PDF fonts are the container's.** XeTeX resolves `\setmainfont` against real
+  installed family names and ignores fontconfig's metric aliases, so a font the
+  image does not ship fails the whole PDF build. The typography font list is
+  therefore mapped to installed equivalents in
+  `backend/app/utils/latex_template_generator.py` — Times New Roman renders as
+  Liberation Serif, Arial as Liberation Sans, Helvetica as Nimbus Sans, Palatino
+  as P052, Courier as Nimbus Mono PS, Georgia as DejaVu Serif. Adding a new
+  option to `FontFamily` means installing a family for it in the Dockerfile.
 
 ---
 

@@ -1,0 +1,59 @@
+\documentclass[11pt]{article}
+\usepackage[margin=0.75in]{geometry}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{hyperref}
+\usepackage{fontspec}
+\usepackage{setspace}
+\usepackage{amssymb}
+\usepackage{ragged2e}
+\setmainfont{Liberation Sans}
+\setsansfont{Liberation Sans}
+\setmonofont{Liberation Mono}
+
+% Define tightlist for Pandoc
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}%
+  \setlength{\parskip}{0pt}%
+}
+
+% Global spacing tweaks
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\onehalfspacing
+
+% Section styling
+\titleformat{\section}{\bfseries\Large}{}{0pt}{}
+\titlespacing*{\section}{0pt}{8pt}{4pt}
+\titleformat{\subsection}{\bfseries\normalsize}{}{0pt}{}
+\titlespacing*{\subsection}{0pt}{6pt}{3pt}
+
+% List styling: use round bullets, remove numbering from ordered lists
+\setlist{nosep}
+\setlist[itemize]{label=\textbullet, leftmargin=*}
+\setlist[enumerate]{label=\textbullet, leftmargin=*}
+
+% Disable page numbers
+\pagenumbering{gobble}
+
+% Disable section numbering completely
+\setcounter{secnumdepth}{0}
+
+% Contact info line emitted by the export service as raw LaTeX.
+% Defined here so the default template works without a generated
+% typography template (which supplies its own styled version).
+\providecommand{\contactinfo}[1]{{%
+  \small #1%
+  \par
+}}
+
+% Do not render title/author/date block; rely on content heading for name once
+% $if(title)$\title{$title$}$endif$
+% $if(author)$\author{$for(author)$$author$$sep$\\$endfor$}$endif$
+% $if(date)$\date{$date$}$endif$
+
+\begin{document}
+% $if(title)$\maketitle$endif$
+\justifying
+$body$
+\end{document}

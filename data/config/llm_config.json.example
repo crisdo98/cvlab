@@ -1,0 +1,10 @@
+{
+  "provider": "bedrock",
+  "api_key": "your-encrypted-api-key-here",
+  "model": "anthropic.claude-3-5-sonnet-20241022-v2:0",
+  "base_url": null,
+  "temperature": 0.0,
+  "max_tokens": 4000,
+  "enabled": true,
+  "consent_given": false
+}

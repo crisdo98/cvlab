@@ -1,0 +1,47 @@
+# Core dependencies
+fastapi==0.116.1
+uvicorn[standard]==0.35.0
+pydantic==2.12.0
+python-multipart==0.0.20
+aiofiles==24.1.0
+pyyaml==6.0.2
+python-json-logger==3.3.0
+
+# Testing dependencies
+pytest==8.4.1
+pytest-asyncio==1.1.0
+httpx==0.28.1
+hypothesis==6.138.2
+
+# File handling
+python-magic==0.4.27
+PyPDF2==3.0.1
+python-docx==1.1.0
+Markdown>=3.7
+
+# LLM Provider SDKs
+openai==1.99.9
+anthropic>=0.59.0
+
+# AWS Bedrock SDK
+# boto3 and botocore are required for AWS Bedrock integration
+# These versions support all Bedrock models including Claude 3, Llama 3, and Titan
+boto3>=1.34.34
+botocore>=1.34.34
+
+# Security
+cryptography==41.0.7
+
+# Web scraping dependencies
+beautifulsoup4==4.13.4
+requests==2.32.4
+lxml==6.0.2
+
+# Optional: Local LLM support (Ollama)
+# Uncomment if using local models
+# ollama==0.1.6
+
+# Claude Code provider (Claude Agent SDK). Bundles a self-contained claude
+# binary, so no Node or global npm install is needed in the image.
+claude-agent-sdk>=0.2.152
+

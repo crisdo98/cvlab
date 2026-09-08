@@ -1,0 +1,87 @@
+# ---------------------------------------------------------------------------
+# Secrets and credentials  -- NEVER commit
+# ---------------------------------------------------------------------------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+data/config/.llm_key
+data/config/llm_config.json
+data/config/llm_consent_log.json
+backend/data/
+
+# ---------------------------------------------------------------------------
+# Personal data  -- CVs, job applications, exports and backups are the user's
+# own (and sometimes third parties') data. The directories are tracked via
+# .gitkeep; their contents never are.
+# ---------------------------------------------------------------------------
+data/*
+!data/.gitkeep
+!data/*.example
+!data/config/
+data/config/*
+!data/config/*.example
+cv/*
+!cv/.gitkeep
+exports/*
+!exports/.gitkeep
+!exports/pdf/
+exports/pdf/*
+!exports/pdf/.gitkeep
+!exports/docx/
+exports/docx/*
+!exports/docx/.gitkeep
+!exports/txt/
+exports/txt/*
+!exports/txt/.gitkeep
+
+# ---------------------------------------------------------------------------
+# Python
+# ---------------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+.hypothesis/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# ---------------------------------------------------------------------------
+# Node / Next.js
+# ---------------------------------------------------------------------------
+node_modules/
+.next/
+out/
+*.tsbuildinfo
+npm-debug.log*
+yarn-error.log*
+
+# ---------------------------------------------------------------------------
+# IDE and editor state (contains absolute home-directory paths)
+# ---------------------------------------------------------------------------
+.idea/
+/shelf/
+/workspace.xml
+/modules.xml
+/vcs.xml
+/*.iml
+/inspectionProfiles/
+/claudeCodeEditorTabs.xml
+.vscode/
+*.swp
+
+# ---------------------------------------------------------------------------
+# Agent / session scratch
+# ---------------------------------------------------------------------------
+.remember/
+.claude/
+
+# ---------------------------------------------------------------------------
+# OS
+# ---------------------------------------------------------------------------
+.DS_Store
+Thumbs.db

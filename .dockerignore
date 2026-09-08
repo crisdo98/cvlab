@@ -1,0 +1,77 @@
+# Git
+.git
+.gitignore
+
+# Documentation
+README.md
+*.md
+
+# Python
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+env
+pip-log.txt
+pip-delete-this-directory.txt
+.tox
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.log
+.git
+.mypy_cache
+.pytest_cache
+.hypothesis
+
+# Node.js
+node_modules
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.npm
+.yarn-integrity
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Development
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build artifacts
+dist
+build
+*.egg-info
+
+# Next.js
+.next
+out
+# Personal data -- never send it to the build daemon. The container gets these
+# through bind mounts at run time, not through the image.
+data
+cv
+exports
+.remember
+
+# IDE / editor state (contains absolute home-directory paths)
+workspace.xml
+modules.xml
+vcs.xml
+*.iml
+inspectionProfiles
+claudeCodeEditorTabs.xml

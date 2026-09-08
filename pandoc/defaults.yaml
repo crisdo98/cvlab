@@ -1,0 +1,12 @@
+from: markdown+yaml_metadata_block+smart
+number-sections: false
+toc: false
+variables:
+  geometry: margin=0.8in
+  mainfont: Helvetica Neue
+  monofont: Menlo
+  fontsize: 11pt
+metadata:
+  lang: en-US
+  colorlinks: true
+

@@ -1,0 +1,7 @@
+{
+  "retention_days": 30,
+  "max_files_per_format": 100,
+  "cleanup_interval_hours": 24,
+  "enabled": true,
+  "dry_run": false
+}

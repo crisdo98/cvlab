@@ -1,0 +1,276 @@
+@import "tailwindcss";
+
+/* ============================================================================
+   CVLab design tokens.
+   Palette is lifted from the cvlab.png mark: navy #1d4a6e and teal #2fa295.
+   Ported from the Vue app's tailwind.config.js — Tailwind v4 is CSS-first, so
+   what were `theme.extend` keys are now custom properties under @theme.
+   ========================================================================= */
+@theme {
+  /* Supplied by next/font in layout.tsx; fallbacks keep text sane before
+     the faces load and in tests, where next/font is not running. */
+  --font-sans: var(--font-plex-sans), system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  --font-serif: var(--font-plex-serif), Georgia, Cambria, serif;
+
+  /* Navy — primary actions, headings, document rules */
+  --color-primary-50: #f1f5f8;
+  --color-primary-100: #dde7ef;
+  --color-primary-200: #bcd0de;
+  --color-primary-300: #8fb0c6;
+  --color-primary-400: #5c88a6;
+  --color-primary-500: #37678a;
+  --color-primary-600: #1b4a6b;
+  --color-primary-700: #1d4a6e;
+  --color-primary-800: #163d59;
+  --color-primary-900: #122b3d;
+
+  /* Teal — selection, active state, positive signal */
+  --color-accent-50: #f0faf8;
+  --color-accent-100: #d5f2ed;
+  --color-accent-200: #abe3db;
+  --color-accent-300: #77cec3;
+  --color-accent-400: #47b6a9;
+  --color-accent-500: #2fa295;
+  --color-accent-600: #268b80;
+  --color-accent-700: #1f7d73;
+  --color-accent-800: #1a6259;
+  --color-accent-900: #164e47;
+
+  /* Text */
+  --color-ink: #16202b;
+  --color-ink-muted: #5c6773;
+  --color-ink-subtle: #8b959f;
+  --color-ink-faint: #a6aeb7;
+  --color-ink-ghost: #c3c9d0;
+
+  /* Hairlines */
+  --color-line: #e3e6ea;
+  --color-line-strong: #d3d8de;
+  --color-line-soft: #eef0f3;
+
+  /* Surfaces */
+  --color-surface: #ffffff;
+  --color-ground: #f6f7f8;
+  --color-ground-panel: #fbfbfc;
+  --color-ground-sunken: #eceef1;
+
+  --color-success-50: #f2faf5;
+  --color-success-200: #bbf7d0;
+  --color-success-600: #2f9e57;
+  --color-success-800: #1e5f35;
+
+  --color-warning-50: #fdf8ee;
+  --color-warning-200: #f3d99c;
+  --color-warning-400: #d9920f;
+  --color-warning-600: #a06a08;
+  --color-warning-800: #5e3f06;
+
+  --color-danger-50: #fdf3f2;
+  --color-danger-200: #f5c2be;
+  --color-danger-500: #c4453b;
+  --color-danger-600: #b4302a;
+  --color-danger-800: #711f1c;
+
+  --radius-control: 4px;
+  --radius-panel: 6px;
+  --radius-dialog: 8px;
+
+  --spacing-topbar: 48px;
+  --spacing-rail: 248px;
+  --spacing-preview: 440px;
+
+  --text-micro: 10.5px;
+  --text-meta: 11.5px;
+  --text-ui: 12.5px;
+}
+
+/* Class strategy: the theme hook toggles `.dark` on <html>. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* Dark theme is a single re-pointing of the tokens above. Every component
+   built on them inverts automatically — no dark: variant per element. */
+.dark {
+  --color-surface: #151c24;
+  --color-ground: #0f151b;
+  --color-ground-panel: #131a21;
+  --color-ground-sunken: #0b1015;
+
+  --color-ink: #e4e9ee;
+  --color-ink-muted: #9aa5b0;
+  --color-ink-subtle: #7c8894;
+  --color-ink-faint: #616d79;
+  --color-ink-ghost: #46515c;
+
+  --color-line: #242e38;
+  --color-line-strong: #313c47;
+  --color-line-soft: #1b242c;
+
+  --color-primary-600: #3d7ba8;
+  --color-primary-700: #4a8ab8;
+  --color-primary-800: #5c99c4;
+
+  --color-danger-50: #2a1614;
+  --color-danger-200: #5c2c27;
+  --color-danger-800: #f0b6b1;
+
+  --color-warning-50: #241c0c;
+  --color-warning-200: #4d3a17;
+  --color-warning-800: #f0d4a0;
+
+  --color-success-50: #0f2418;
+  --color-success-200: #1e4d31;
+  --color-success-800: #a9e0be;
+
+  --color-primary-50: #12212c;
+  --color-primary-200: #24455e;
+  --color-primary-800: #a8cde6;
+}
+
+@layer base {
+  html {
+    font-family: var(--font-sans);
+  }
+
+  body {
+    @apply bg-ground text-ink;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgb(47 162 149 / 0.22);
+  }
+}
+
+@layer components {
+  /* ------------------------------------------------------------------
+     Buttons — flat, 32px, 4px radius. No gradients, no glow.
+     ------------------------------------------------------------------ */
+  .btn {
+    @apply inline-flex items-center justify-center gap-2;
+    @apply h-8 px-3 rounded-control text-ui font-medium;
+    @apply transition-colors duration-150;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-accent-500/40 focus-visible:ring-offset-1;
+    @apply disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .btn-primary {
+    @apply bg-primary-600 text-white hover:bg-primary-800;
+  }
+
+  .btn-secondary {
+    @apply bg-surface text-ink border border-line-strong hover:bg-ground;
+  }
+
+  .btn-accent {
+    @apply bg-accent-700 text-white hover:bg-accent-800;
+  }
+
+  .btn-ghost {
+    @apply bg-transparent text-ink-muted hover:bg-line-soft hover:text-ink;
+  }
+
+  .btn-danger {
+    @apply bg-danger-600 text-white hover:bg-danger-800;
+  }
+
+  .btn-sm {
+    @apply h-7 px-2.5 text-meta;
+  }
+
+  .btn-lg {
+    @apply h-10 px-4 text-sm;
+  }
+
+  .btn-icon {
+    @apply w-8 px-0;
+  }
+
+  /* ------------------------------------------------------------------
+     Surfaces
+     ------------------------------------------------------------------ */
+  .card {
+    @apply bg-surface rounded-panel border border-line;
+  }
+
+  /* ------------------------------------------------------------------
+     Rail / panel labels
+     ------------------------------------------------------------------ */
+  .rail-label {
+    @apply font-mono text-micro font-medium uppercase tracking-[0.09em] text-ink-subtle;
+  }
+
+  .meta-mono {
+    @apply font-mono text-micro text-ink-subtle;
+  }
+
+  .chip {
+    @apply inline-flex items-center font-mono text-[10px] font-medium uppercase tracking-[0.06em];
+    @apply px-1.5 py-0.5 rounded-[3px] text-accent-700 bg-accent-500/10;
+  }
+
+  /* ------------------------------------------------------------------
+     Form controls
+     ------------------------------------------------------------------ */
+  .field-label {
+    @apply block text-meta font-medium text-ink-muted mb-1.5;
+  }
+
+  .input {
+    @apply w-full h-8 px-2.5 rounded-control text-ui;
+    @apply bg-surface text-ink border border-line-strong;
+    @apply placeholder:text-ink-faint;
+    @apply focus:outline-none focus:border-accent-500 focus:ring-[3px] focus:ring-accent-500/15;
+    @apply transition-colors duration-150;
+  }
+
+  textarea.input {
+    @apply h-auto py-2 leading-relaxed;
+  }
+
+  /* ------------------------------------------------------------------
+     Alerts
+     ------------------------------------------------------------------ */
+  .alert {
+    @apply rounded-panel border p-4 mb-4 text-ui;
+  }
+
+  .alert-error {
+    @apply bg-danger-50 border-danger-200 text-danger-800;
+  }
+
+  .alert-success {
+    @apply bg-success-50 border-success-200 text-success-800;
+  }
+
+  .alert-warning {
+    @apply bg-warning-50 border-warning-200 text-warning-800;
+  }
+
+  .alert-info {
+    @apply bg-primary-50 border-primary-200 text-primary-800;
+  }
+}
+
+/* Scrollbars: thin, unobtrusive. */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: var(--color-line-strong);
+  border-radius: 9999px;
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--color-ink-ghost);
+  border: 3px solid transparent;
+  background-clip: padding-box;
+}

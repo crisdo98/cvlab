@@ -1,0 +1,75 @@
+# CVLab -- local development / everyday use.
+#
+#   docker-compose up --build -d      # normal run  -> http://localhost:8002
+#   docker-compose --profile dev up   # hot-reloading backend on :8003
+#   docker-compose --profile local-llm up -d   # add a local Ollama sidecar
+#
+services:
+  cvlab:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cvlab:latest
+    container_name: cvlab
+    ports:
+      - "8002:8000"
+    volumes:
+      # Personal data lives on the host, never in the image.
+      - ./data:/app/data
+      - ./cv:/app/cv
+      - ./exports:/app/exports
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      ENVIRONMENT: production
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      start_period: 20s
+      retries: 3
+
+  # Backend with live reload. The static frontend is still the one baked into
+  # the image -- run `npm run dev` in frontend-next/ for frontend hot reload.
+  cvlab-dev:
+    profiles: ["dev"]
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: cvlab:latest
+    container_name: cvlab-dev
+    command: >
+      uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
+      --reload-dir /app/backend
+    ports:
+      - "8003:8000"
+    volumes:
+      - ./backend:/app/backend
+      - ./scripts:/app/scripts
+      - ./templates:/app/templates
+      - ./pandoc:/app/pandoc
+      - ./data:/app/data
+      - ./cv:/app/cv
+      - ./exports:/app/exports
+    env_file:
+      - path: .env
+        required: false
+    environment:
+      ENVIRONMENT: development
+
+  # Optional offline LLM backend. Point LLM_PROVIDER=local and
+  # OLLAMA_BASE_URL=http://ollama:11434 at it.
+  ollama:
+    profiles: ["local-llm"]
+    image: ollama/ollama:latest
+    container_name: cvlab-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-models:/root/.ollama
+    restart: unless-stopped
+
+volumes:
+  ollama-models:

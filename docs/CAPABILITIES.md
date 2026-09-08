@@ -310,10 +310,8 @@ policy, with a dry-run mode so you can see what would go first.
 | `scripts/make-reference.sh` | Regenerate `scripts/reference.docx` |
 | `scripts/tune_docx.py` | Adjust styles inside a DOCX reference document |
 | `scripts/backup-cvlab.sh` | Backup with rotation, via the API |
-| `scripts/startup-check.sh` | Validate the container toolchain |
 | `scripts/validate-docker.sh` | Validate the Docker setup before building |
-| `scripts/verify-bedrock-deps.sh` | Confirm boto3/Bedrock prerequisites |
-| `scripts/venv.sh`, `scripts/uv.sh` | Host-side Python environment helpers |
+| `scripts/venv.sh`, `scripts/uv.sh` | Host-side Python environment helpers (install `backend/requirements.txt`, useful for IDE interpreter resolution) |
 
 ---
 

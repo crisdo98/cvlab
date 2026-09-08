@@ -34,7 +34,7 @@ All LLM providers implement the `BaseLLMProvider` abstract class, which defines:
    - Supports Claude, Llama, and Titan models on AWS Bedrock
    - Uses boto3 AWS SDK
    - Includes AWS credential management and region configuration
-   - See `BEDROCK_SETUP.md` for detailed setup instructions
+   - See `providers/AWS_BEDROCK_SETUP.md` for detailed setup instructions
 
 4. **Local Provider** (`local_provider.py`)
    - Supports Ollama and llama.cpp
@@ -202,7 +202,7 @@ response = await provider.generate_completion(
 # Titan: titan-text-express, titan-text-lite, titan-text-premier
 ```
 
-For detailed Bedrock setup instructions, see `backend/app/llm/providers/BEDROCK_SETUP.md`.
+For detailed Bedrock setup instructions, see `backend/app/llm/providers/AWS_BEDROCK_SETUP.md`.
 
 ## Error Handling
 

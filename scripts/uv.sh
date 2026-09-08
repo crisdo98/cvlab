@@ -18,7 +18,7 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
-REQS_FILE="$ROOT_DIR/requirements.txt"
+REQS_FILE="$ROOT_DIR/backend/requirements.txt"
 
 # Update uv itself (correct subcommand)
 uv self update || true

@@ -4,7 +4,7 @@ set -euo pipefail
 # Create a local Python virtual environment under .venv using uv and install requirements.
 ROOT_DIR=$(cd "$(dirname "$0")/.." && pwd)
 VENV_DIR="$ROOT_DIR/.venv"
-REQS_FILE="$ROOT_DIR/requirements.txt"
+REQS_FILE="$ROOT_DIR/backend/requirements.txt"
 
 # Ensure uv is installed
 if ! command -v uv >/dev/null 2>&1; then

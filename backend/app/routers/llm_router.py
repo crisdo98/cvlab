@@ -1053,25 +1053,33 @@ async def test_connection() -> Dict[str, Any]:
         # what the provider actually said.
         connected = await provider.test_connection()
         if not connected:
-            # Claude Code authenticates from the environment rather than from a
-            # key in AI settings, so the generic "check your credentials" advice
-            # sends people to a field that does not exist for it.
+            # Prefer whatever the provider actually reported. Guessing at the
+            # cause sends people to fix the wrong thing: a usage limit, an
+            # unknown model and a bad token all look identical from here.
+            reason = getattr(provider, "last_error", None)
+
             if config.provider == LLMProviderType.CLAUDE_CODE:
+                # Claude Code authenticates from the environment rather than
+                # from a key in AI settings, so the generic "check your
+                # credentials" advice points at a field it does not have.
                 hint = (
-                    "Claude Code is not authenticated here. It reads "
-                    "CLAUDE_CODE_OAUTH_TOKEN from the environment; a browser "
-                    "login on your machine is not visible to this server. Mint "
-                    "a token with `claude setup-token` and set it in .env, then "
-                    "restart. The server log has the underlying error."
+                    "Claude Code reads CLAUDE_CODE_OAUTH_TOKEN from the "
+                    "server's environment; a browser login on your machine is "
+                    "not visible to it. If the token is missing or expired, "
+                    "mint one with `claude setup-token`, set it in .env and "
+                    "restart."
                 )
             else:
-                hint = (
-                    "Check the credentials and model in AI settings; the server "
-                    "log has the underlying error."
-                )
+                hint = "Check the credentials and model in AI settings."
+
+            detail = f"Could not reach the {config.provider.value} provider."
+            if reason:
+                detail += f" The provider said: {reason}"
+            detail += f" {hint} The server log has the full error."
+
             raise HTTPException(
                 status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-                detail=f"Could not reach the {config.provider.value} provider. {hint}",
+                detail=detail,
             )
 
         return {

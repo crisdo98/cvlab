@@ -42,6 +42,10 @@ ENV PYTHONUNBUFFERED=1 \
 #                                  pulls in (titlesec, enumitem, ragged2e,
 #                                  setspace, amssymb, fontspec)
 #   fonts-liberation            -- the fonts templates/cv.latex selects
+#   fonts-urw-base35            -- Nimbus Sans (Helvetica) and P052 (Palatino),
+#                                  which the typography font mapping selects
+#   fonts-dejavu-core           -- broad glyph coverage, fallback for symbols
+#   fontconfig                  -- fc-list/fc-match, for diagnosing font issues
 #   libmagic1                   -- python-magic, used for upload sniffing
 #   zsh                         -- scripts/export.sh is a zsh script and uses
 #                                  zsh-only syntax; without it the export
@@ -54,6 +58,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         texlive-latex-extra \
         texlive-fonts-recommended \
         fonts-liberation \
+        fonts-urw-base35 \
+        fonts-dejavu-core \
+        fontconfig \
         libmagic1 \
         curl \
         ca-certificates \

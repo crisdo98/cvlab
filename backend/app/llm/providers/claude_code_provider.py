@@ -52,6 +52,10 @@ class ClaudeCodeProvider(BaseLLMProvider):
 
     def __init__(self, config: LLMConfig):
         super().__init__(config)
+        #: Why the last test_connection() failed, if it did. Read by the API so
+        #: it can report the real cause rather than assuming a credentials
+        #: problem.
+        self.last_error: Optional[str] = None
         self._validate_config()
 
     # ------------------------------------------------------------------ setup
@@ -73,8 +77,14 @@ class ClaudeCodeProvider(BaseLLMProvider):
             )
         return True
 
-    def _options(self, system_prompt: Optional[str]):
-        """Build agent options with the harness locked down to text only."""
+    def _options(self, system_prompt: Optional[str], stderr_sink=None):
+        """Build agent options with the harness locked down to text only.
+
+        `stderr_sink` receives the CLI's stderr lines. The SDK reports a failed
+        subprocess as "Command failed with exit code N / Check stderr output for
+        details", so without this the actual reason — an expired token, a usage
+        limit, an unknown model — never reaches the caller.
+        """
         from claude_agent_sdk import ClaudeAgentOptions
 
         # The SDK merges this over os.environ for the CLI subprocess, so a saved
@@ -85,6 +95,7 @@ class ClaudeCodeProvider(BaseLLMProvider):
 
         return ClaudeAgentOptions(
             env=env,
+            stderr=stderr_sink,
             model=self.config.model,
             system_prompt=system_prompt,
             # One turn, no tools: this is a completion, not an agent session.
@@ -94,8 +105,12 @@ class ClaudeCodeProvider(BaseLLMProvider):
                 "Bash", "Read", "Write", "Edit", "Glob", "Grep",
                 "WebFetch", "WebSearch", "Task", "NotebookEdit",
             ],
-            # Never prompt for permission — there is no human in this loop.
-            permission_mode="bypassPermissions",
+            # No permission mode is set on purpose. "bypassPermissions" maps to
+            # --dangerously-skip-permissions, which the CLI refuses to run as
+            # root — and the container runs as root, so it failed instantly with
+            # a message the SDK swallowed. Nothing needs bypassing anyway: this
+            # call grants no tools at all (see allowed_tools/disallowed_tools
+            # above), so there is no permission for a human to be asked about.
             # Ignore CLAUDE.md, project settings and plugins.
             setting_sources=None,
         )
@@ -115,9 +130,11 @@ class ClaudeCodeProvider(BaseLLMProvider):
 
         chunks: list[str] = []
         tokens: Optional[int] = None
+        stderr_lines: list[str] = []
 
         try:
-            async for message in query(prompt=prompt, options=self._options(system_prompt)):
+            options = self._options(system_prompt, stderr_sink=stderr_lines.append)
+            async for message in query(prompt=prompt, options=options):
                 if isinstance(message, AssistantMessage):
                     for block in message.content:
                         if isinstance(block, TextBlock):
@@ -134,7 +151,12 @@ class ClaudeCodeProvider(BaseLLMProvider):
                 "claude-agent-sdk package — reinstall it if this persists."
             ) from exc
         except ClaudeSDKError as exc:
-            # Most often: no credentials. Say so rather than leaking internals.
+            # The CLI puts the human-readable reason on stderr ("You've hit your
+            # session limit", "Invalid API key", ...). Lead with that when we
+            # have it; the SDK's own text says nothing useful on its own.
+            detail = self._summarise_stderr(stderr_lines)
+            if detail:
+                raise RuntimeError(f"Claude Code call failed: {detail}") from exc
             raise RuntimeError(f"Claude Code call failed: {exc}") from exc
 
         text = "".join(chunks).strip()
@@ -226,11 +248,29 @@ class ClaudeCodeProvider(BaseLLMProvider):
 
     # ------------------------------------------------------------- diagnostics
 
+    @staticmethod
+    def _summarise_stderr(lines: list[str]) -> str:
+        """Condense captured stderr into one line worth showing a user."""
+        text = " ".join(line.strip() for line in lines if line.strip())
+        if not text:
+            return ""
+        # The CLI is chatty on startup; keep this bounded.
+        return text[:400]
+
     async def test_connection(self) -> bool:
-        """Check that Claude Code is installed and authenticated."""
+        """Check that Claude Code is installed and authenticated.
+
+        On failure the reason is kept on `last_error` so callers can report what
+        actually went wrong instead of guessing at authentication.
+        """
+        self.last_error = None
         try:
             text, _ = await self._run("Reply with exactly: ok", None)
-            return "ok" in text.lower()
+            if "ok" in text.lower():
+                return True
+            self.last_error = "Claude Code replied, but not with the expected text."
+            return False
         except Exception as exc:
             logger.warning("Claude Code connection test failed: %s", exc)
+            self.last_error = str(exc)
             return False

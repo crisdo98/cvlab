@@ -39,7 +39,7 @@ the source (see [§6](#6-developing)).
 ```bash
 git clone <your-fork-url> cvlab
 cd cvlab
-cp .env.example .env          # optional: only needed for AI features
+cp .env.example .env          # required (compose reads it even with defaults); AI features need real keys
 docker-compose up --build -d  # first build takes 5-10 min (TeX layer)
 ```
 

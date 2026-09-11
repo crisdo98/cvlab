@@ -17,8 +17,7 @@ services:
       - ./cv:/app/cv
       - ./exports:/app/exports
     env_file:
-      - path: .env
-        required: false
+      - .env
     environment:
       ENVIRONMENT: production
     restart: always
